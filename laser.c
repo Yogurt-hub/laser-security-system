@@ -34,7 +34,7 @@ void loop() {
     int red_voltage = 0;
     int add_voltage = 51;
 
-    if (voltage_read < stable_voltage + spike_voltage) {
+    if (voltage_read < stable_voltage - spike_voltage) {
 
       for (int j = 0; j < 5; j++) {
 
@@ -65,9 +65,9 @@ void loop() {
           digitalWrite(buzzer, LOW);
           delay(500);
         }
-      } while (voltage_read < stable_voltage + spike_voltage);
+      } while (voltage_read < stable_voltage - spike_voltage);
 
-    } else if (voltage_read <= stable_voltage + 10 || voltage_read >= stable_voltage + 10) {
+    } else if (voltage_read <= stable_voltage - 10 || voltage_read >= stable_voltage + 10) {
 
       digitalWrite(red_led, LOW);
       digitalWrite(green_led, HIGH);
