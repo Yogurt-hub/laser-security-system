@@ -4,7 +4,7 @@ const int red_led = 6;
 const int green_led = 5;
 const int blue_led  = 7;
 const int white_led = 8;
-const int yellow_led = 10;	//bug indicator.
+const int yellow_led = 10;	//indicates that there's a huge Light fluctuation
 const int buzzer = 3;
 const int pin_input = A0;
 
@@ -67,7 +67,7 @@ void loop(){
 			}
 		}while(voltage_read < stable_voltage + spike_voltage);
 
-	}else if(voltage_read < spike_voltage){
+	}else if(voltage_read <= stable_voltage + 20 || voltage_read >= stable_voltage + 20){
 
 		digitalWrite(red_led, LOW);
 		digitalWrite(green_led, HIGH);
