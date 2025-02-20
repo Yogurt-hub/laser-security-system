@@ -6,161 +6,79 @@ const int blue_led = 7;
 const int white_led = 8;
 const int yellow_led = 10;  //indicates that there's a huge Light fluctuation
 const int buzzer = 3;
+const int ldr = 13;
 const int pin_input = A0;
 
+int stable_voltage;
 
-int stable_voltage;  //first voltage reading(with a laser through the ldr).
-int spike_voltage = 70;
-int voltage_read;  //voltage read inside the loop(it keeps updating).
 
 void setup() {
-  //for checking the voltage value;
-  //Serial.begin(9600);
-
-  pin_setup();
-  loading();
-  
-
-  //Serial.println(stable_voltage);
-}
-
-void loop() {
-  stable_voltage = analogRead(pin_input);
-  //extra loop just in case there's a huge light fluctuation
-  for (int t = 0; t < 10; t++) {
-    voltage_read = analogRead(pin_input);
-    int time = 500;
-    int time_change = 2;
-    int red_voltage = 0;
-    int add_voltage = 51;
-
-    if (voltage_read <= stable_voltage - spike_voltage) {
-
-      for (int j = 0; j < 5; j++) {
-
-        red_voltage += add_voltage;
-        digitalWrite(white_led, HIGH);
-        delay(time_change);
-        digitalWrite(white_led, LOW);
-        digitalWrite(blue_led, HIGH);
-        delay(time_change);
-        digitalWrite(blue_led, LOW);
-        delay(time_change);
-        digitalWrite(green_led, HIGH);
-        delay(time_change);
-        digitalWrite(green_led, LOW);
-        analogWrite(red_led, red_voltage);
-        analogWrite(buzzer, red_voltage);
-
-        time = time / time_change;
-      }
-      do {
-        voltage_read = analogRead(pin_input);
-        for (int k = 0; k < 3; k++) {
-
-          digitalWrite(red_led, HIGH);
-          digitalWrite(buzzer, HIGH);
-          delay(500);
-          digitalWrite(red_led, LOW);
-          digitalWrite(buzzer, LOW);
-          delay(500);
-        }
-      } while (voltage_read <= stable_voltage - spike_voltage);
-
-    } else if (voltage_read <= stable_voltage - 20 || voltage_read >= stable_voltage + 20) {
-
-      digitalWrite(red_led, LOW);
-      digitalWrite(green_led, HIGH);
-      digitalWrite(blue_led, LOW);
-      digitalWrite(white_led, LOW);
-
-
-    } else {
-
-      digitalWrite(yellow_led, HIGH);
-      delay(500);
-      digitalWrite(yellow_led, LOW);
-      delay(500);
-    }
-  }
-  
-}
-
-
-
-
-
-void pin_setup() {
 
   pinMode(red_led, OUTPUT);
   pinMode(green_led, OUTPUT);
   pinMode(blue_led, OUTPUT);
-  pinMode(white_led, OUTPUT);
   pinMode(yellow_led, OUTPUT);
-  pinMode(buzzer, OUTPUT);
   pinMode(pin_input, INPUT);
+  pinMode(buzzer, OUTPUT);
+  pinMode(ldr, OUTPUT);
+  Serial.begin(9600);
+  digitalWrite(ldr, OUTPUT);
+  //loading();
+  stable_voltage = analogRead(pin_input);  //first input
 }
-void loading() {
-  float voltage_add = 51;
-  float voltage_container = 0;
-  int i = 0;
-  int time = 1000;
-  int time_change = 2;
-  int result;
+void loop() {
+  int voltage_read;
 
-  for (i; i < 5; i++) {
-    voltage_container += voltage_add;  //voltage change per iteration
-    result = time / time_change;      // time change per iteration
-    int option = i % 2;
-    if (option == 0) {
+  Serial.println(stable_voltage);
+  for (int i = 0; i < 5; i++) {
+    voltage_read = analogRead(pin_input);
+    Serial.println(voltage_read);
+    if (voltage_read > stable_voltage + 30) {
+      
 
-      digitalWrite(red_led, HIGH);
-      delay(result);
-      digitalWrite(red_led, LOW);
-      digitalWrite(green_led, voltage_container);
-      delay(result);
-      digitalWrite(blue_led, HIGH);
-      delay(result);
-      digitalWrite(blue_led, LOW);
-      digitalWrite(white_led, HIGH);
-      delay(result);
-      digitalWrite(white_led, LOW);
-      digitalWrite(yellow_led, HIGH);
-      delay(result);
+      do {
 
-    } else if (option == 1) {
-
-      digitalWrite(yellow_led, LOW);
-      digitalWrite(white_led, HIGH);
-      delay(result);
-      digitalWrite(white_led, LOW);
-      digitalWrite(blue_led, HIGH);
-      delay(result);
-      digitalWrite(blue_led, LOW);
-      digitalWrite(green_led, voltage_container);
-      delay(result);
-
-    } else {
-      for (int a = 0; a < 3; a++) {
-
-        digitalWrite(red_led, HIGH);
-        digitalWrite(green_led, HIGH);
-        digitalWrite(blue_led, HIGH);
-        digitalWrite(white_led, HIGH);
-        digitalWrite(yellow_led, HIGH);
-        delay(500);
-        digitalWrite(red_led, LOW);
-        digitalWrite(green_led, LOW);
-        digitalWrite(blue_led, LOW);
-        digitalWrite(white_led, LOW);
-        digitalWrite(yellow_led, LOW);
-        delay(500);
+        voltage_read = analogRead(pin_input);
+        for (int j = 0; j < 1; j++) {
+          digitalWrite(red_led, HIGH);
+          digitalWrite(buzzer, HIGH);
+          digitalWrite(blue_led, HIGH);
+          digitalWrite(white_led, HIGH);
+          delay(20);
+          digitalWrite(buzzer, LOW);
+          digitalWrite(red_led, LOW);
+          digitalWrite(blue_led, LOW);
+          digitalWrite(white_led, LOW);
+          delay(20);
+        }
+      } while (voltage_read > stable_voltage + 30);
+      for (int nel = 0; nel < 1; nel++) {
+        digitalWrite(buzzer, HIGH);
+        delay(1000);
+        digitalWrite(buzzer, LOW);
       }
+    } else {
+
+      digitalWrite(green_led, HIGH);
     }
+    digitalWrite(red_led, LOW);
+    digitalWrite(green_led, LOW);
   }
-  digitalWrite(red_led, LOW);
-  analogWrite(green_led, 255);
-  digitalWrite(blue_led, LOW);
-  digitalWrite(white_led, LOW);
-  digitalWrite(yellow_led, LOW);
 }
+/*void loading() {
+  digitalWrite(red_led, HIGH);
+  digitalWrite(red_led, LOW);
+  delay(500);
+  digitalWrite(green_led, HIGH);
+  digitalWrite(green_led, LOW);
+  delay(500);
+  digitalWrite(blue_led, HIGH);
+  digitalWrite(blue_led, LOW);
+  delay(500);
+  digitalWrite(white_led, HIGH);
+  digitalWrite(white_led, LOW);
+  delay(500);
+  digitalWrite(yellow_led, HIGH);
+  digitalWrite(yellow_led, LOW);
+  delay(500);
+}*/
