@@ -44,18 +44,24 @@ void loop() {
           digitalWrite(buzzer, HIGH);
           digitalWrite(blue_led, HIGH);
           digitalWrite(white_led, HIGH);
-          delay(20);
+          delay(700);
           digitalWrite(buzzer, LOW);
           digitalWrite(red_led, LOW);
           digitalWrite(blue_led, LOW);
           digitalWrite(white_led, LOW);
-          delay(20);
+          delay(700);
         }
       } while (voltage_read > stable_voltage + 30);
       for (int nel = 0; nel < 1; nel++) {
-        digitalWrite(buzzer, HIGH);
-        delay(1000);
-        digitalWrite(buzzer, LOW);
+        analogWrite(buzzer, 255);
+        delay(500);
+        analogWrite(buzzer, 153);
+        delay(400);
+        analogWrite(buzzer, 102);
+        delay(300);
+        analogWrite(buzzer, 51);
+        delay(200);
+        digitalWrite(buzzer, 0);
       }
     } else {
 
